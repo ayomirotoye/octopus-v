@@ -1,7 +1,8 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Trans } from 'react-i18next';
+import MyLogo from '../../assets/images/logo-mini.svg';
 
 const Navbar = () => {
     const toggleOffcanvas = () => {
@@ -14,7 +15,7 @@ const Navbar = () => {
     return (
         <nav className="navbar p-0 fixed-top d-flex flex-row">
             <div className="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-                {/* <Link className="navbar-brand brand-logo-mini" to="/"><img src={require('../../assets/images/logo-mini.svg')} alt="logo" /></Link> */}
+                <Link className="navbar-brand brand-logo-mini" to="/"><img src={MyLogo} alt="logom" /></Link>
             </div>
             <div className="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
                 <button className="navbar-toggler align-self-center" type="button" onClick={() => document.body.classList.toggle('sidebar-icon-only')}>
@@ -88,7 +89,7 @@ const Navbar = () => {
                             <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                                 <div className="preview-thumbnail">
                                     <div className="preview-icon bg-dark rounded-circle">
-                                        <img src={require('../../assets/images/faces/face4.jpg')} alt="profile" className="rounded-circle profile-pic" />
+                                        <img src={require('../../assets/images/faces/face4.jpg').default} alt="profile" className="rounded-circle profile-pic" />
                                     </div>
                                 </div>
                                 <div className="preview-item-content">
@@ -112,7 +113,7 @@ const Navbar = () => {
                             <Dropdown.Item href="!#" onClick={evt => evt.preventDefault()} className="preview-item">
                                 <div className="preview-thumbnail">
                                     <div className="preview-icon bg-dark rounded-circle">
-                                        <img src={require('../../assets/images/faces/face3.jpg')} alt="profile" className="rounded-circle profile-pic" />
+                                        <img src={require('../../assets/images/faces/face3.jpg').default} alt="profile" className="rounded-circle profile-pic" />
                                     </div>
                                 </div>
                                 <div className="preview-item-content">
@@ -180,7 +181,7 @@ const Navbar = () => {
                     <Dropdown alignRight as="li" className="nav-item">
                         <Dropdown.Toggle as="a" className="nav-link cursor-pointer no-caret">
                             <div className="navbar-profile">
-                                <img className="img-xs rounded-circle" src={require('../../assets/images/faces/face15.jpg')} alt="profile" />
+                                <img className="img-xs rounded-circle" src={require('../../assets/images/faces/face15.jpg').default} alt="profile" />
                                 <p className="mb-0 d-none d-sm-block navbar-profile-name"><Trans>Henry Klein</Trans></p>
                                 <i className="mdi mdi-menu-down d-none d-sm-block"></i>
                             </div>

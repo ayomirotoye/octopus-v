@@ -1,5 +1,5 @@
 import React, {Suspense, lazy } from 'react';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Spinner from './pages/shared/Spinner';
 
@@ -27,12 +27,11 @@ const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 const AppRoutes = () => {
   return (
     <Suspense fallback={<Spinner />}>
-      <BrowserRouter>
         <Switch>
           <Route
             path="/login"
-            render={() => <Dashboard />}
-          />
+            component={ Dashboard } />
+
 
           {/* <Route path="/basic-ui/buttons" component={ Buttons } />
           <Route path="/basic-ui/dropdowns" component={ Dropdowns } />
@@ -54,9 +53,8 @@ const AppRoutes = () => {
           <Route path="/error-pages/error-500" component={ Error500 } /> */}
 
 
-          {/* <Redirect to="/dashboard" /> */}
+          <Redirect to="/dashboard" />
         </Switch>
-      </BrowserRouter>
     </Suspense>
   );
 

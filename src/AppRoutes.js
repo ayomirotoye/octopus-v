@@ -5,7 +5,7 @@ import Spinner from './pages/shared/Spinner';
 
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 
-// const Buttons = lazy(() => import('./basic-ui/Buttons'));
+const EkedpTnx = lazy(() => import('./pages/EkedpTnx'));
 // const Dropdowns = lazy(() => import('./basic-ui/Dropdowns'));
 // const Typography = lazy(() => import('./basic-ui/Typography'));
 

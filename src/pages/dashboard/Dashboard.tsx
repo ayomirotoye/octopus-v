@@ -774,7 +774,6 @@ const Dashboard = () => {
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">To do list</h4>
-              {/* <TodoListComponent /> */}
             </div>
           </div>
         </div>

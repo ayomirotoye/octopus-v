@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Collapse } from "react-bootstrap";
 import { Trans } from "react-i18next";
+import Brand from "../../components/Brand";
 
 const Sidebar = () => {
   const location = useLocation();
 
   const [values, setValues] = useState(Object.assign({}));
-  
+
   const toggleMenuState = (menuState: any) => {
     if (values[menuState]) {
       setValues({ [menuState]: false });
@@ -69,15 +70,7 @@ const Sidebar = () => {
   return (
     <nav className="sidebar sidebar-offcanvas" id="sidebar">
       <div className="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-        <div id="photo" style={{ textAlign: "left" }}>
-          <span style={{ verticalAlign: "middle" }}>OCTOPUS</span>
-          <img
-            src={require("../../assets/images/vfdLogo.svg").default}
-            alt="logom"
-            style={{ verticalAlign: "middle" }}
-            height="40"
-          />
-        </div>
+        <Brand greenLogo={false} />
         <a className="sidebar-brand brand-logo-mini" href="index.html">
           <img
             src={require("../../assets/images/logo-mini.svg").default}
@@ -135,11 +128,11 @@ const Sidebar = () => {
                 <li className="nav-item">
                   <Link
                     className={
-                      isPathActive("/transactions/ekedp")
+                      isPathActive("/dashboard/transactions")
                         ? "nav-link active"
                         : "nav-link"
                     }
-                    to="/transactions/ekedp"
+                    to="/dashboard/transactions"
                   >
                     <Trans>View</Trans>
                   </Link>

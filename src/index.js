@@ -3,9 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import LoadingSpinner from "./components/LoadingSpinner";
+import { ToastContainer } from 'react-toastify';
+import { injectStyle } from "react-toastify/dist/inject-style";
+import 'react-toastify/dist/ReactToastify.css';
+
+//THIS IS TO INJECT THE toastify style
+if (typeof window !== "undefined") {
+  injectStyle();
+}
 
 ReactDOM.render(
   <React.StrictMode>
+    <ToastContainer limit={1} progressClassName="toast-progress-bar" />
+    <LoadingSpinner />
     <App />
   </React.StrictMode>,
   document.getElementById('root')

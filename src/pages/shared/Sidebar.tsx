@@ -23,7 +23,6 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    onRouteChanged();
     // add class 'hover-open' to sidebar navitem while hover in sidebar-icon-only menu
     const body = (document as any).querySelector("body");
     document.querySelectorAll(".sidebar .nav-item").forEach((el) => {
@@ -40,28 +39,28 @@ const Sidebar = () => {
     });
   }, []);
 
-  const onRouteChanged = () => {
-    (document as any).querySelector("#sidebar").classList.remove("active");
-    Object.keys(values).forEach((i) => {
-      setValues({ [i]: false });
-    });
-    const dropdownPaths = [
-      { path: "/apps", state: "appsMenuOpen" },
-      { path: "/basic-ui", state: "basicUiMenuOpen" },
-      { path: "/form-elements", state: "formElementsMenuOpen" },
-      { path: "/tables", state: "tablesMenuOpen" },
-      { path: "/icons", state: "iconsMenuOpen" },
-      { path: "/charts", state: "chartsMenuOpen" },
-      { path: "/user-pages", state: "userPagesMenuOpen" },
-      { path: "/error-pages", state: "errorPagesMenuOpen" },
-    ];
+  // const onRouteChanged = () => {
+  //   (document as any).querySelector("#sidebar").classList.remove("active");
+  //   Object.keys(values).forEach((i) => {
+  //     setValues({ [i]: false });
+  //   });
+  //   const dropdownPaths = [
+  //     { path: "/apps", state: "appsMenuOpen" },
+  //     { path: "/basic-ui", state: "basicUiMenuOpen" },
+  //     { path: "/form-elements", state: "formElementsMenuOpen" },
+  //     { path: "/tables", state: "tablesMenuOpen" },
+  //     { path: "/icons", state: "iconsMenuOpen" },
+  //     { path: "/charts", state: "chartsMenuOpen" },
+  //     { path: "/user-pages", state: "userPagesMenuOpen" },
+  //     { path: "/error-pages", state: "errorPagesMenuOpen" },
+  //   ];
 
-    dropdownPaths.forEach((obj) => {
-      if (isPathActive(obj.path)) {
-        setValues({ [obj.state]: true });
-      }
-    });
-  };
+  //   dropdownPaths.forEach((obj) => {
+  //     if (isPathActive(obj.path)) {
+  //       setValues({ [obj.state]: true });
+  //     }
+  //   });
+  // };
 
   const isPathActive = (path: any) => {
     return location?.pathname?.startsWith(path);
@@ -83,22 +82,6 @@ const Sidebar = () => {
           <span className="nav-link">
             <Trans>Navigation</Trans>
           </span>
-        </li>
-        <li
-          className={
-            isPathActive("/dashboard")
-              ? "nav-item menu-items active"
-              : "nav-item menu-items"
-          }
-        >
-          <Link className="nav-link" to="/dashboard">
-            <span className="menu-icon">
-              <i className="mdi mdi-speedometer"></i>
-            </span>
-            <span className="menu-title">
-              <Trans>Dashboard</Trans>
-            </span>
-          </Link>
         </li>
         <li
           className={

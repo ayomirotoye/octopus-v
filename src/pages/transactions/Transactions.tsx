@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  callToExportAsCSV,
   callToExportAsPDF,
   callTofetchEkedpTransaction,
 } from "../../services/transactions-service";
 import { trackPromise } from "react-promise-tracker";
 import { spinnerAreas } from "../../common/constants";
 import { Dropdown, ButtonGroup } from "react-bootstrap";
-import { isObject, isSuccessful } from "../../common/helpers";
+import { downloadCSV, isObject, isSuccessful } from "../../common/helpers";
 import DataTable, { TableColumn } from "react-data-table-component";
 import ViewTnxDetailsModal from "./ViewTnxDetailsModal";
 import WordWrap from "../../components/WordWrap";
@@ -19,23 +18,38 @@ import { Button } from "reactstrap";
 
 type DataRow = {
   id: string;
-  amount: number;
-  paymentReference: string;
-  accountType: string;
+  createdAt: string;
+  transactionId: string;
+  terminalId: string;
+  transactionRference: string;
   accountNumber: string;
   meterNumber: string;
+  amount: string;
+  commissionAmount: string;
+  netAmount: string;
+  paymentReference: string;
+  customerDistrict: string;
+  customerAddress: string;
+  customerType: string;
+  customerName: string;
+  modeOfPayment: string;
+  tariffClass: string;
+  kilowatts: string;
+  vat: string;
+  transactionReceiptNumber: string;
+  accountType: string;
   orderId: string;
   partnerChannel: string;
   paymentPurpose: string;
   responseCode: string;
   responseMessage: string;
-  stdToken: any;
+  stdToken: string;
   bsstToken: string;
-  statusCode: string;
-  statusCodeValue: string;
-  createdAt: string;
   updatedAt: string;
+	statusCode: string;
 };
+
+let currentRecords: any = [];
 
 const Export = ({ onExport }: any) => (
   <Button onClick={(e: any) => onExport(e.target.value)}>Export as CSV</Button>
@@ -54,6 +68,7 @@ const Transactions = () => {
       callTofetchEkedpTransaction()
         .then((res: any) => {
           if (isSuccessful(res.responseCode)) {
+            currentRecords = res.data;
             setTheTnxs(res.data);
           } else {
             setTheTnxs([]);
@@ -124,80 +139,14 @@ const Transactions = () => {
         cell: (row) => <WordWrap word={row.createdAt} />,
         sortable: true,
         maxWidth: "10%",
-      },
-      {
-        name: "Actions",
-        cell: (row: any, _e: any) => (
-          <Dropdown as={ButtonGroup}>
-            <Dropdown.Toggle id="transaction-action-btn">
-              Action
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="super-colors">
-              <Dropdown.Item
-                eventKey="1"
-                onClick={(e: any) => openViewTnxDetailsModal(e, row)}
-              >
-                View details
-              </Dropdown.Item>
-              {/* <Dropdown.Item eventKey="2">Print receipt</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item eventKey="4">Dispute</Dropdown.Item> */}
-            </Dropdown.Menu>
-          </Dropdown>
-        ),
-        allowOverflow: true,
-        button: true,
-        maxWidth: "20%",
-      },
+      }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  function convertArrayOfObjectsToCSV(array: any) {
-    let result: any;
-
-    const columnDelimiter = ",";
-    const lineDelimiter = "\n";
-    const keys = Object.keys(theTnxs[0]);
-
-    result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
-
-    array.forEach((item: { [x: string]: any }) => {
-      let ctr = 0;
-      keys.forEach((key) => {
-        if (ctr > 0) result += columnDelimiter;
-
-        result += item[key];
-
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
-
-    return result;
-  }
-
-  function downloadCSV(array: any) {
-    const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv == null) return;
-
-    const filename = "export.csv";
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
-    }
-
-    link.setAttribute("href", encodeURI(csv));
-    link.setAttribute("download", filename);
-    link.click();
-  }
-
   const actionsMemo = React.useMemo(
-    () => <Export onExport={() => downloadCSV(theTnxs)} />,
+    () => <Export onExport={() => downloadCSV(currentRecords)} />,
     []
   );
 

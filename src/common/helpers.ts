@@ -108,16 +108,59 @@ export const doAuthentication = () => {
   return null;
 };
 
-export const doAuthorization = (url:string) => {
-  let accessibleMenus:any = encryptStorage.getItem("accessibleMenus");
+export const doAuthorization = (url: string) => {
+  let accessibleMenus: any = encryptStorage.getItem("accessibleMenus");
   let authorized = false;
   if (!isNullOrUndefined(accessibleMenus) && accessibleMenus.length > 0) {
     let checkerArr = accessibleMenus.filter(
-      (obj:any) => obj.menuController === url
+      (obj: any) => obj.menuController === url
     );
     if (checkerArr && checkerArr.length > 0) {
       authorized = true;
     }
   }
   return authorized;
+};
+
+function convertArrayOfObjectsToCSV(array: any) {
+  let result: any;
+
+  const columnDelimiter = ",";
+  const lineDelimiter = "\n";
+  // console.log("THE TNXS:::", theTnxs)
+  const keys = !isNullOrUndefined(array) ? Object.keys(array[0]) : [];
+
+  result = "";
+  result += keys.join(columnDelimiter);
+  result += lineDelimiter;
+
+  array.forEach((item: { [x: string]: any }) => {
+    let ctr = 0;
+    keys.forEach((key) => {
+      if (ctr > 0) result += columnDelimiter;
+
+      result += item[key];
+
+      ctr++;
+    });
+    result += lineDelimiter;
+  });
+
+  return result;
+}
+
+export const downloadCSV = (array: any) => {
+  const link = document.createElement("a");
+  let csv = convertArrayOfObjectsToCSV(array);
+  if (csv == null) return;
+
+  const filename = "export.csv";
+
+  if (!csv.match(/^data:text\/csv/i)) {
+    csv = `data:text/csv;charset=utf-8,${csv}`;
+  }
+
+  link.setAttribute("href", encodeURI(csv));
+  link.setAttribute("download", filename);
+  link.click();
 };

@@ -29,14 +29,13 @@ const Login = () => {
     trackPromise(
       callToUserLogin(loginData)
         .then((res: any) => {
-          console.log("RESPONSE::", res);
           if (isSuccessful(res.responseCode)) {
             httpServiceInterfaceOauth2.setJwt(res?.data.accessToken);
             encryptStorage.setItem("isLoggedIn", "true");
             encryptStorage.setItem("accessToken", res?.data.accessToken);
             encryptStorage.setItem("name", res?.data.name);
             history.push({
-              pathname: routeConstants.DASHBOARD_ENDPOINT,
+              pathname: routeConstants.TRANSACTION_ENDPOINT,
             });
           } else {
             toast.error(responseMessage.LOGIN_FAILED);
@@ -90,15 +89,6 @@ const Login = () => {
                   >
                     SIGN IN
                   </Button>
-                </div>
-                <div className="my-2 d-flex justify-content-center align-items-center">
-                  <a
-                    href="!#"
-                    onClick={(event) => event.preventDefault()}
-                    className="auth-link text-muted"
-                  >
-                    Forgot password?
-                  </a>
                 </div>
               </Form>
             </div>

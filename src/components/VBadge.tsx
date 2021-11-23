@@ -1,11 +1,11 @@
 import { isEkedpSuccessful } from "../common/helpers";
 
-const VBadge = ({ responseCode, statusCodeValue }: any) => (
+const VBadge = ({ statusCode }: any) => (
   <>
-    {isEkedpSuccessful(responseCode, statusCodeValue) ? (
-      <div className="badge badge-outline-success">Successful</div>
+    {isEkedpSuccessful(statusCode) ? (
+      <div className="badge badge-outline-success">{statusCode}</div>
     ) : (
-      <div className="badge badge-outline-warning">Pending</div>
+      <div className="badge badge-outline-warning">{statusCode}</div>
     )}
   </>
 );

@@ -1,30 +1,27 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Trans } from "react-i18next";
-import MyLogo from "../../assets/images/logo-mini.svg";
 import { routeConstants } from "../../routing/RouteConstants";
 import { encryptStorage } from "../../common/helpers";
 
 const Navbar = () => {
-  const doLogout = () => {
-    <Redirect to={routeConstants.LOGOUT_ENDPOINT} />;
-  };
-
   const toggleOffcanvas = () => {
     (document as any)
       .querySelector(".sidebar-offcanvas")
       .classList!.toggle("active");
   };
 
-  // const toggleRightSidebar = () => {
-  //     (document as any).querySelector('.right-sidebar').classList!.toggle('open');
-  // }
   return (
     <nav className="navbar p-0 fixed-top d-flex flex-row">
       <div className="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
         <Link className="navbar-brand brand-logo-mini" to="/">
-          <img src={MyLogo} alt="logom" />
+          <img
+            src={require("../../assets/images/vfdLogo.svg").default}
+            alt="logom"
+            style={{ verticalAlign: "middle" }}
+            height="40"
+          />
         </Link>
       </div>
       <div className="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
@@ -58,23 +55,6 @@ const Navbar = () => {
               <h6 className="p-3 mb-0">
                 <Trans>Profile</Trans>
               </h6>
-              <Dropdown.Divider />
-              <Dropdown.Item
-                href="!#"
-                onClick={(evt) => evt.preventDefault()}
-                className="preview-item"
-              >
-                <div className="preview-thumbnail">
-                  <div className="preview-icon bg-dark rounded-circle">
-                    <i className="mdi mdi-settings text-success"></i>
-                  </div>
-                </div>
-                <div className="preview-item-content">
-                  <p className="preview-subject mb-1">
-                    <Trans>Settings</Trans>
-                  </p>
-                </div>
-              </Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item
                 href={routeConstants.LOGOUT_ENDPOINT}

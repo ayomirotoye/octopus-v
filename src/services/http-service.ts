@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { handleMyErrors } from "../common/error-handler";
-import { encryptStorage, isNullOrUndefined } from "../common/helpers";
+import {  isNullOrUndefined } from "../common/helpers";
 
 const myOauth2Axios: AxiosInstance = axios.create({
   baseURL: "",
@@ -30,11 +30,6 @@ function getJwt() {
     return null;
   }
 }
-
-const getRefreshToken = () => {
-  let tokenVal = encryptStorage.getItem("refreshToken");
-  return tokenVal;
-};
 
 const doGet = async (url: string, _config?: any) => {
   let resData: any = {};

@@ -13,7 +13,7 @@ const Login = lazy(() => import("./pages/auth/Login"));
 const Logout = lazy(() => import("./pages/auth/Logout"));
 
 function App() {
-  const [isFullPageLayout, setIsFullPageLayout] = useState(false);
+  const [isFullPageLayout] = useState(false);
 
   let navbarComponent = !isFullPageLayout ? <Navbar /> : "";
   let sidebarComponent = !isFullPageLayout ? <Sidebar /> : "";

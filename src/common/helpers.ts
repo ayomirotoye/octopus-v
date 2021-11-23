@@ -86,13 +86,10 @@ export const isSuccessful = (val: any) => {
     String(val).toLowerCase() === "successful"
   );
 };
-export const isEkedpSuccessful = (val: any, statusCodeValue: string) => {
+export const isEkedpSuccessful = (statusCodeValue: string) => {
   return (
-    val !== null &&
-    val !== undefined &&
-    val === "0" &&
-    statusCodeValue !== null &&
-    statusCodeValue.includes("success")
+    !isNullOrUndefined(statusCodeValue) &&
+    statusCodeValue.toLowerCase().includes("confirmed")
   );
 };
 
@@ -122,21 +119,27 @@ export const doAuthorization = (url: string) => {
   return authorized;
 };
 
-function convertArrayOfObjectsToCSV(array: any) {
+function convertArrayOfObjectsToCSV(array: any, columnHeaders: any[]) {
   let result: any;
 
   const columnDelimiter = ",";
   const lineDelimiter = "\n";
-  // console.log("THE TNXS:::", theTnxs)
   const keys = !isNullOrUndefined(array) ? Object.keys(array[0]) : [];
 
   result = "";
-  result += keys.join(columnDelimiter);
+
+  for (let i = 0; i < keys.length; i++) {
+    if (columnHeaders.includes(keys[i])) {
+      result += defineHeaderValue(String(keys[i])).concat(
+        i === keys.length - 1 ? "" : columnDelimiter
+      );
+    }
+  }
   result += lineDelimiter;
 
   array.forEach((item: { [x: string]: any }) => {
     let ctr = 0;
-    keys.forEach((key) => {
+    columnHeaders.forEach((key) => {
       if (ctr > 0) result += columnDelimiter;
 
       result += item[key];
@@ -149,9 +152,20 @@ function convertArrayOfObjectsToCSV(array: any) {
   return result;
 }
 
-export const downloadCSV = (array: any) => {
+export const defineHeaderValue = (val: string) => {
+  let definedVal = val;
+  if (val === "createdAt") {
+    definedVal = "Date";
+  } else if (val === "stdToken") {
+    definedVal = "ems receipt / token";
+  }
+
+  return camelCaseToSentenceCase(definedVal).toUpperCase();
+};
+
+export const downloadCSV = (array: any, columnHeaders: any[]) => {
   const link = document.createElement("a");
-  let csv = convertArrayOfObjectsToCSV(array);
+  let csv = convertArrayOfObjectsToCSV(array, columnHeaders);
   if (csv == null) return;
 
   const filename = "export.csv";

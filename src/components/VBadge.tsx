@@ -1,11 +1,11 @@
 import { isEkedpSuccessful } from "../common/helpers";
 
-const VBadge = ({ statusCode }: any) => (
+const VBadge = ({ statusCode, children }: any) => (
   <>
     {isEkedpSuccessful(statusCode) ? (
-      <div className="badge badge-outline-success">{statusCode}</div>
+      <div style={{ wordBreak: "break-word" }} className="badge badge-outline-success">{children}</div>
     ) : (
-      <div className="badge badge-outline-warning">{statusCode}</div>
+      <div style={{ wordBreak: "break-word" }} className="badge badge-outline-warning">{children}</div>
     )}
   </>
 );

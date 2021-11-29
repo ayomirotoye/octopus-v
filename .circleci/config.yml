@@ -1,0 +1,57 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@0.5.13
+
+jobs:
+  run_tests:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: npm-install
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: test
+          command: npm test
+  testing_working:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: npm-install
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules  
+workflows:
+  version: 2
+  build_deploy:
+    jobs:
+      - testing_working
+      - docker/publish:
+          image: 172.18.14.230:5000/cib-web-app-prod:3.40
+          dockerfile: ./Dockerfile
+          filters:
+            branches:
+              only: 
+                - develop

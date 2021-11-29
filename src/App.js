@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routing/AppRoutes";
 import Spinner from "./pages/shared/Spinner";
 import { routeConstants } from "./routing/RouteConstants";
+import PageNotFound from "./pages/PageNotFound";
 
 const Login = lazy(() => import("./pages/auth/Login"));
 const Logout = lazy(() => import("./pages/auth/Logout"));
@@ -24,7 +25,6 @@ function App() {
       <Suspense fallback={<Spinner />}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/login" component={Login} />
           <Route exact path="/logout" render={() => <Logout />} />
           <Route path={routeConstants.DASHBOARD_ENDPOINT}>
             <div className="container-scroller">
@@ -40,6 +40,7 @@ function App() {
               </div>
             </div>
           </Route>
+          <Route component={PageNotFound} />
         </Switch>
       </Suspense>
     </BrowserRouter>

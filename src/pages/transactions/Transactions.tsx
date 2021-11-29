@@ -1,18 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  callToExportAsPDF,
   callTofetchEkedpTransaction,
 } from "../../services/transactions-service";
 import { trackPromise } from "react-promise-tracker";
 import { spinnerAreas } from "../../common/constants";
-import { Dropdown, ButtonGroup } from "react-bootstrap";
 import { downloadCSV, isObject, isSuccessful } from "../../common/helpers";
 import DataTable, { TableColumn } from "react-data-table-component";
 import WordWrap from "../../components/WordWrap";
 import VBadge from "../../components/VBadge";
 import FilterComponent from "../../components/FilterComponent";
-import { responseMessage } from "../../common/response-message";
-import { toast } from "react-toastify";
 import { Button } from "reactstrap";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
@@ -70,7 +66,8 @@ let requiredColumnHeaders = [
   "vat",
   "stdToken",
   "transactionReceiptNumber",
-  "status"]
+  "status",
+];
 
 let currentRecords: any = [];
 
@@ -134,7 +131,8 @@ const Transactions = () => {
       {
         name: "STATUS",
         cell: (row) => (
-          <VBadge responseCode={row.responseCode} statusCode={row.status} />
+              // <VBadge responseCode={row.responseCode} statusCode={row.status} />
+              <VBadge statusCode={row.status}><WordWrap word={row.status}/></VBadge>
         ),
         selector: (row) => row.responseCode,
         sortable: true,
@@ -250,38 +248,19 @@ const Transactions = () => {
         sortable: true,
         maxWidth: "10%",
       },
-     
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
   const actionsMemo = React.useMemo(
-    () => <Export onExport={() => downloadCSV(currentRecords, requiredColumnHeaders)} />,
+    () => (
+      <Export
+        onExport={() => downloadCSV(currentRecords, requiredColumnHeaders)}
+      />
+    ),
     []
   );
-
-  const exportAsPDF = () => {
-    trackPromise(
-      callToExportAsPDF()
-        .then((res: any) => {
-          if (isSuccessful(res.responseCode)) {
-            toast.success(responseMessage.FILE_HAS_BEEN_SENT_TO_YOUR_EMAIL);
-            openFile(res.data);
-          } else {
-            toast.error(responseMessage.FILE_COULD_NOT_BE_GENERATED);
-          }
-        })
-        .catch((err) => {
-          console.log("ERROR OCCURRED:::", err);
-        }),
-      spinnerAreas.transactions
-    );
-  };
-
-  const openFile = (url: string) => {
-    window.open(url, "_blank");
-  };
 
   const filteredItems =
     theTnxs !== undefined &&
@@ -340,7 +319,7 @@ const Transactions = () => {
                     A record of transactions done on EKEDP channel
                   </p>
                 </div>
-                <div>
+                {/* <div>
                   <Dropdown as={ButtonGroup}>
                     <Dropdown.Toggle id="export-action-btn">
                       Export
@@ -354,7 +333,7 @@ const Transactions = () => {
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-                </div>
+                </div> */}
               </div>
               <>
                 <LoadingSpinner areas={spinnerAreas.transactions} />

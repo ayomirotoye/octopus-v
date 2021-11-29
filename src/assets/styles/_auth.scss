@@ -1,11 +1,24 @@
 .form-control {
-    border: 1px solid #2c2e33;
-    height: calc(2.25rem + 2px);
-    font-weight: normal;
-    font-size: 0.875rem;
-    padding: 0.625rem 0.6875rem;
-    background-color: #ffffff;
-    border-radius: 2px;
-    color: map-get($theme-colors , "primary" ) !important;
-  }
-  
+  border: 1px solid #2c2e33;
+  height: calc(2.25rem + 2px);
+  font-weight: normal;
+  font-size: 0.875rem;
+  padding: 0.625rem 0.6875rem;
+  background-color: #ffffff;
+  border-radius: 2px;
+  color: map-get($theme-colors, "primary") !important;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: pre-wrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}

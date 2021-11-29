@@ -11,7 +11,7 @@ export const GuardedRoute = (props: any) => (
       ) : (
         <Redirect
           to={{
-            pathname: "/login",
+            pathname: "/",
             state: { from: location },
           }}
         />

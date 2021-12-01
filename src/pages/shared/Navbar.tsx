@@ -1,7 +1,6 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Trans } from "react-i18next";
 import { routeConstants } from "../../routing/RouteConstants";
 import { encryptStorage } from "../../common/helpers";
 
@@ -45,7 +44,7 @@ const Navbar = () => {
                   alt="profile"
                 />
                 <p className="mb-0 d-none d-sm-block navbar-profile-name">
-                  <Trans>{encryptStorage.getItem("name")}</Trans>
+                 {encryptStorage.getItem("name")}
                 </p>
                 <i className="mdi mdi-menu-down d-none d-sm-block"></i>
               </div>
@@ -53,7 +52,7 @@ const Navbar = () => {
 
             <Dropdown.Menu className="navbar-dropdown preview-list navbar-profile-dropdown-menu">
               <h6 className="p-3 mb-0">
-                <Trans>Profile</Trans>
+               Profile
               </h6>
               <Dropdown.Divider />
               <Dropdown.Item
@@ -67,14 +66,14 @@ const Navbar = () => {
                 </div>
                 <div className="preview-item-content">
                   <p className="preview-subject mb-1">
-                    <Trans>Log Out</Trans>
+                   Log Out
                   </p>
                 </div>
               </Dropdown.Item>
               <Dropdown.Divider />
               <div className="text-center">
                 <small className="p-3 mb-0 text-center">
-                  <Trans> - you are the best -</Trans>
+                  - you are the best -
                 </small>
               </div>
             </Dropdown.Menu>

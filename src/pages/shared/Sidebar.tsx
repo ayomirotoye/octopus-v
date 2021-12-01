@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Collapse } from "react-bootstrap";
-import { Trans } from "react-i18next";
 import Brand from "../../components/Brand";
 
 const Sidebar = () => {
@@ -82,7 +81,7 @@ const Sidebar = () => {
       <ul className="nav">
         <li className="nav-item nav-category">
           <span className="nav-link">
-            <Trans>Navigation</Trans>
+            Navigation
           </span>
         </li>
         <li
@@ -103,7 +102,7 @@ const Sidebar = () => {
               <i className="mdi mdi-laptop"></i>
             </span>
             <span className="menu-title">
-              <Trans>EKEDP Transactions</Trans>
+              EKEDP Transactions
             </span>
             <i className="menu-arrow"></i>
           </div>
@@ -119,7 +118,7 @@ const Sidebar = () => {
                     }
                     to="/dashboard/transactions"
                   >
-                    <Trans>View</Trans>
+                    View
                   </Link>
                 </li>
               </ul>

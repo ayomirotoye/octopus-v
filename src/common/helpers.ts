@@ -127,7 +127,6 @@ function convertArrayOfObjectsToCSV(array: any, columnHeaders: any[]) {
   const lineDelimiter = "\n";
   const keys = !isNullOrUndefined(array) ? Object.keys(array[0]) : [];
 
-  console.log("KEYSSS:::", keys);
   result = "";
 
   for (let i = 0; i < keys.length; i++) {
@@ -140,7 +139,6 @@ function convertArrayOfObjectsToCSV(array: any, columnHeaders: any[]) {
   headerString += lineDelimiter;
 
   array.forEach((item: { [x: string]: any }) => {
-    let ctr = 0;
     columnHeaders.forEach((key) => {
       // if (ctr > 0){
       result += item[key] + columnDelimiter;
@@ -166,21 +164,17 @@ export const defineHeaderValue = (val: string) => {
 };
 
 export const downloadCSV = (array: any, columnHeaders: any[]) => {
-  console.log("ARRAY OF RECORDS:::", array);
   const link = document.createElement("a");
   let csv = convertArrayOfObjectsToCSV(array, columnHeaders);
-  console.log("CSV:::", csv);
   if (csv.body == null) return;
 
   const filename = "export.csv";
   let csvBody = csv.body;
   if (!csvBody.match(/^data:text\/csv/i)) {
-    var BOM = "\uFEFF";
-    csvBody = BOM + csvBody;
-    csvBody = `data:text/csv;charset=utf-8,${csv.header+csvBody}`;
+    csvBody = `data:text/csv;charset=utf-8,${encodeURIComponent(csv.header+csvBody)}`;
   }
 
-  link.setAttribute("href", encodeURI( csvBody));
+  link.setAttribute("href",  csvBody);
   link.setAttribute("download", filename);
   link.click();
 };

@@ -14,24 +14,11 @@ export const callTofetchEkedpTransaction = async () => {
   }
 };
 
-export const callToExportAsPDF = async (dto?: string) => {
+export const callTofetchEkedpTransactionByDateRange = async (dateRange: any) => {
   try {
-    const data = await httpServiceInterfaceOauth2.post(
-      urlsToCall.urlToExportAsPDF,
-      dto
-    );
-
-    return data;
-  } catch (err) {
-    return handleMyErrors(err);
-  }
-};
-
-export const callToExportAsCSV = async (dto?: string) => {
-  try {
-    const data = await httpServiceInterfaceOauth2.post(
-      urlsToCall.urlToExportAsCSV,
-      dto
+    const data = await httpServiceInterfaceOauth2.get(
+      urlsToCall.urlToFetchEkedpTransactions?.
+        concat("fromDate=", dateRange.fromDate, "&", "toDate=", dateRange.toDate)
     );
 
     return data;

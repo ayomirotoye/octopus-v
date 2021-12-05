@@ -140,11 +140,7 @@ function convertArrayOfObjectsToCSV(array: any, columnHeaders: any[]) {
 
   array.forEach((item: { [x: string]: any }) => {
     columnHeaders.forEach((key) => {
-      // if (ctr > 0){
       result += item[key] + columnDelimiter;
-
-      // ctr++;
-      // }
     });
     result += lineDelimiter;
   });

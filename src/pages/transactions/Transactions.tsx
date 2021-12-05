@@ -2,15 +2,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   callTofetchEkedpTransaction,
 } from "../../services/transactions-service";
-import { trackPromise } from "react-promise-tracker";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { spinnerAreas } from "../../common/constants";
-import { downloadCSV, isObject, isSuccessful } from "../../common/helpers";
+import { downloadCSV, isNullOrUndefined, isSuccessful } from "../../common/helpers";
 import DataTable, { TableColumn } from "react-data-table-component";
 import WordWrap from "../../components/WordWrap";
 import VBadge from "../../components/VBadge";
 import FilterComponent from "../../components/FilterComponent";
 import { Button } from "reactstrap";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import { isWithinInterval } from "date-fns"
+import Loader from "react-loader-spinner";
 
 type DataRow = {
   id: string;
@@ -71,13 +72,55 @@ let requiredColumnHeaders = [
 
 let currentRecords: any = [];
 
+const doFiltering = (searchArr: DataRow[], filterBy: string, filterVal: string) => {
+  let resultArr = [];
+  if (filterBy !== "SEARCH_BY_DATERANGE") {
+    resultArr = searchArr !== undefined ?
+      searchArr.filter(
+        (item: any) =>
+          Object.keys(item).filter(x => x === filterBy)
+          && !isNullOrUndefined(item[filterBy])
+          && String(item[filterBy].toLowerCase()).indexOf(filterVal.toLowerCase()) !== -1
+      ) : [];
+  } else {
+    let arrDates = filterVal.split("|");
+    let fromDate = new Date(arrDates[0]);
+    let toDate = new Date(arrDates[1]);
+    resultArr = searchArr !== undefined ?
+      searchArr.filter(
+        (item: any) =>
+          Object.keys(item).filter(x => x === "createdAt")
+          && !isNullOrUndefined(item["createdAt"])
+          && isWithinDateRange(fromDate, toDate, new Date(item["createdAt"]))
+      ) : [];
+  }
+  currentRecords = resultArr;
+  return resultArr;
+}
+
+const isWithinDateRange = (startDate: Date, endDate: Date, dateToCheck: Date) => {
+  let isWithin = isWithinInterval(
+    dateToCheck,
+    { start: startDate, end: endDate }
+  )
+
+  return isWithin;
+}
+
 const Export = ({ onExport }: any) => (
   <Button onClick={(e: any) => onExport(e.target.value)}>Export as CSV</Button>
 );
 
 const Transactions = () => {
+  const { promiseInProgress } = usePromiseTracker({ delay: 0 });
   const [theTnxs, setTheTnxs] = useState(Object.assign([]));
   const [filterText, setFilterText] = React.useState("");
+
+  const [dateRange, setDateRange] = React.useState({
+    fromDate: "",
+    toDate: ""
+  });
+  const [filterBy, setFilterBy] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
 
@@ -131,8 +174,8 @@ const Transactions = () => {
       {
         name: "STATUS",
         cell: (row: { status: any; }) => (
-              // <VBadge responseCode={row.responseCode} statusCode={row.status} />
-              <VBadge statusCode={row.status}><WordWrap word={row.status}/></VBadge>
+          // <VBadge responseCode={row.responseCode} statusCode={row.status} />
+          <VBadge statusCode={row.status}><WordWrap word={row.status} /></VBadge>
         ),
         selector: (row: { responseCode: any; }) => row.responseCode,
         sortable: true,
@@ -262,30 +305,92 @@ const Transactions = () => {
     []
   );
 
-  const filteredItems =
-    theTnxs !== undefined &&
-    theTnxs.filter(
-      (item: any) =>
-        JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
-        -1
-    );
+  let filteredItems: DataRow[] = [];
+
+  const filteredItemz = () => {
+    if (filterBy !== "SEARCH_BY_DATERANGE" && (filterText === "" || isNullOrUndefined(filterText))) {
+      return theTnxs;
+    } else if (filterBy === "SEARCH_BY_DATERANGE" && (dateRange.fromDate.length === 0 || dateRange.toDate.length === 0)) {
+      return theTnxs;
+    }
+    switch (filterBy) {
+      case "SEARCH_BY_DATE":
+        filteredItems = doFiltering(theTnxs, "createdAt", filterText);
+        break;
+      case "SEARCH_BY_REFERENCE":
+        filteredItems = doFiltering(theTnxs, "paymentReference", filterText);
+        break;
+      case "SEARCH_BY_METERNO":
+        filteredItems = doFiltering(theTnxs, "meterNumber", filterText);
+        break;
+      case "SEARCH_BY_RECEIPTNO":
+        filteredItems = doFiltering(theTnxs, "transactionReceiptNumber", filterText);
+        break;
+      case "SEARCH_BY_DATERANGE":
+        filteredItems = doFiltering(theTnxs, "SEARCH_BY_DATERANGE", dateRange.fromDate.concat("|", dateRange.toDate));
+        break;
+      default:
+        filteredItems = theTnxs !== undefined &&
+          theTnxs.filter(
+            (item: any) =>
+              JSON.stringify(Object.values(item)).toLowerCase().indexOf(filterText.toLowerCase()) !==
+              -1
+          );
+        break;
+    }
+    return filteredItems;
+  }
+
+  const handleClick = (eventKey: any, _event: any) => {
+    switch (eventKey) {
+      case "SEARCH_BY_DATE":
+        setFilterBy("SEARCH_BY_DATE");
+        break;
+      case "SEARCH_BY_REFERENCE":
+        setFilterBy("SEARCH_BY_REFERENCE");
+        break;
+      case "SEARCH_BY_METERNO":
+        setFilterBy("SEARCH_BY_METERNO");
+        break;
+      case "SEARCH_BY_RECEIPTNO":
+        setFilterBy("SEARCH_BY_RECEIPTNO");
+        break;
+      case "SEARCH_BY_DATERANGE":
+        setFilterBy("SEARCH_BY_DATERANGE");
+        break;
+      default:
+        setFilterBy("");
+        break;
+    }
+  }
+
 
   const subHeaderComponent = useMemo(() => {
     const handleClear = () => {
-      if (filterText) {
+      if (filterBy !== "SEARCH_BY_DATERANGE") {
+        if (filterText) {
+          setResetPaginationToggle(!resetPaginationToggle);
+          setFilterText("");
+        }
+      } else if (dateRange.fromDate.length > 0 || dateRange.toDate.length > 0) {
         setResetPaginationToggle(!resetPaginationToggle);
-        setFilterText("");
+        setDateRange({ ...dateRange, fromDate: "", toDate: "" });
       }
     };
+
 
     return (
       <FilterComponent
         onFilter={(e: any) => setFilterText(e.target.value)}
+        onFilterByDateRange={(e: any) => setDateRange({ ...dateRange, [e.target.id]: e.target.value })}
         onClear={handleClear}
         filterText={filterText}
+        fromDate={dateRange.fromDate}
+        toDate={dateRange.toDate}
+        onClick={handleClick}
       />
     );
-  }, [filterText, resetPaginationToggle]);
+  }, [filterText, resetPaginationToggle, dateRange]);
 
   return (
     <div>
@@ -319,32 +424,18 @@ const Transactions = () => {
                     A record of transactions done on EKEDP channel
                   </p>
                 </div>
-                {/* <div>
-                  <Dropdown as={ButtonGroup}>
-                    <Dropdown.Toggle id="export-action-btn">
-                      Export
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu className="super-colors">
-                      <Dropdown.Item
-                        eventKey="EXPORT_AS_PDF"
-                        onClick={exportAsPDF}
-                      >
-                        as PDF
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div> */}
               </div>
               <>
-                <LoadingSpinner areas={spinnerAreas.transactions} />
                 <DataTable
                   columns={headers}
                   pagination={true}
-                  data={isObject(filteredItems) ? [] : filteredItems}
+                  data={filteredItemz()}
                   subHeader
                   persistTableHead
                   subHeaderComponent={subHeaderComponent}
                   actions={actionsMemo}
+                  progressPending={promiseInProgress}
+                  progressComponent={<Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />}
                 />
               </>
             </div>

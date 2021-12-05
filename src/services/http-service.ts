@@ -57,7 +57,6 @@ const doPost = async (url: string, requestBody: any, config: any = {}) => {
 const doPut = async (url: string, requestBody: any, config: any = {}) => {
   let resData: any;
   try {
-    // await authHttpForUser();
     const { data } = await myOauth2Axios.put(url, requestBody, config);
     return data;
   } catch (err) {
